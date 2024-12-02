@@ -28,7 +28,7 @@
       ${contextPath} 
    --%>
    
-  <!-- 요청 만들기 1 : <a> 태그 -->
+  <!-- 요청 만들기 1 : <a> 태그 (항상 GET 방식으로 요청합니다.) -->
   <div>
     <a href="<%=request.getContextPath()%>/webdir3/req1">요청1</a>
     <br/>
