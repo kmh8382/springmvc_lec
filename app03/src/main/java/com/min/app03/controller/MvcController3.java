@@ -87,9 +87,9 @@ public class MvcController3 {
   
   // Query String : sort=ASC 
   @RequestMapping(value="/webdir3/req5")
-  public String req5(
-      @RequestParam(value="sort") String sort,  // Parameter sort 가 전달되지 않으면 잘못된 요청(400) 예외가 발생한다.
-      @RequestParam(value="page", required=false, defaultValue="1") int page) {   // Parameter page 가 전달되지 않으면 기보값으로 "1"을 사용합니다.
+  public String req5(@RequestParam(value="sort") String sort, @RequestParam(value="page", required=false, defaultValue="1") int page) {
+//      @RequestParam(value="sort") String sort,  // Parameter sort 가 전달되지 않으면 잘못된 요청(400) 예외가 발생한다.
+//      @RequestParam(value="page", required=false, defaultValue="1") int page) {   // Parameter page 가 전달되지 않으면 기보값으로 "1"을 사용합니다.
     System.out.println(sort + ", " + page);
     return "webdir3/req5"; 
   }
