@@ -28,13 +28,13 @@ public class MvcController2 {
       RedirectAttributes redirectAttributes   // RedirectAttributes 에 저장된 플래시 속성(Flash Attribute)은 redirect 할 때 전달됩니다.
   ) { 
     
-    // 사영자가 입력한 정보를 List 에 저장합니다.
+    // 사용자가 입력한 정보를 List 에 저장합니다.
     boolean result =  people.add(person);
     
     // 입력 성공 유무를 Model 에 속성(Attribute)으로 저장해 봅니다. (사실 쓸데 없는 일입니다.)
     model.addAttribute("msg1", result ? "등록 성공" : "등록 실패");
     
-    // 입력 성공 유무를 RedirectAttributes 에 속성(Flash Attribute)으로 저장해 봅니다. (니다.)
+    // 입력 성공 유무를 RedirectAttributes 에 속성(Flash Attribute)으로 저장해 봅니다. (이게 동작합니다.)
     redirectAttributes.addFlashAttribute("msg2", result ? "등록 성공" : "등록 실패");
     
     

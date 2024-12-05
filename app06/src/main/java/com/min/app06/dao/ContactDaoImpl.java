@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.min.app06.dto.ContactDto;
-import com.mysql.cj.xdevapi.PreparableStatement;
 
 /*
  * JDBC
@@ -90,7 +89,7 @@ public class ContactDaoImpl implements IContactDao {
     // 데이터베이스에 접속합니다.
     conn = jdbcConnection.getConnection();
     try {
-      // 실행할 쿼리문을 가장 먼저 만들어야 합니다..
+      // 실행할 쿼리문을 가장 먼저 만들어야 합니다.
       String sql = "SELECT contact_id, last_name, first_name, email, mobile, create_dt FROM tbl_contact WHERE contact_id = ?";
       // PreparedStatement 객체를 만듭니다.
       ps = conn.prepareStatement(sql);
@@ -141,23 +140,64 @@ public class ContactDaoImpl implements IContactDao {
 
   @Override
   public int register(ContactDto contactDto) {
+    // 등록 결과를 저장할 변수입니다.
+    int result = 0;   // 초기 상채는 등록 시류ㅐ 상태입니다.    
+    // 데이터베이스에 접속합니다.
     conn = jdbcConnection.getConnection();
+    try {
+      // 실행할 쿼리문을 작성합니다. 인자 값은 ?로 표시합니다.     
+      String sql = "INSERT INTO tbl_contact VALUES (null, ?, ?, ?, ?, CURDATE())";
+      // PreparedStatement 객체를 생성합니다.
+      ps = conn.prepareStatement(sql);
+      // 쿼리문에 인자 값을 전달합니다.
+      ps.setString(1, contactDto.getLast_name());
+      ps.setString(2, contactDto.getFirst_name());
+      ps.setString(3, contactDto.getEmail());
+      ps.setString(4, contactDto.getMobile());
+      //쿼리문을 실행하고 결과를 받습니다. 결과가 0이면 등록 실패이고, 1이면 등록 성공입니다.
+      result = ps.executeUpdate();      
+    } catch (Exception e) {
+      e.printStackTrace();
+    }    
+    // 사용한 자원을 반납합니다.
     jdbcConnection.close(conn, ps, rs);
-    return 0;
+    return result;
   }
 
   @Override
   public int modify(ContactDto contactDto) {
+    int result = 0;
     conn = jdbcConnection.getConnection();
+    try {
+      String sql = "UPDATE tbl_contact SET last_name = ?, first_name = ?, email = ?, mobile = ? WHERE contact_id = ?";
+      ps = conn.prepareStatement(sql);
+      ps.setString(1, contactDto.getLast_name());
+      ps.setString(2, contactDto.getFirst_name());
+      ps.setString(3, contactDto.getEmail());
+      ps.setString(4, contactDto.getMobile());
+      ps.setInt(5, contactDto.getContact_id()); 
+      result = ps.executeUpdate(); 
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     jdbcConnection.close(conn, ps, rs);
-    return 0;
+    return result;
   }
 
   @Override
   public int remove(int contact_id) {
+    int result = 0;
     conn = jdbcConnection.getConnection();
+    try {
+      String sql = "DELETE FROM tbl_contact WHERE contact_id = ?";
+      ps = conn.prepareStatement(sql);
+      ps.setInt(1, contact_id);
+      result = ps.executeUpdate(); 
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     jdbcConnection.close(conn, ps, rs);
-    return 0;
+    return result;
   }
 
 }
