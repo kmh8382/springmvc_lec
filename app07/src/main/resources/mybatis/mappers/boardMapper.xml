@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!-- 
+  매퍼
+  1. SQL 구문을 작성하는 파일입니다.
+  2. 다음 태그를 사용할 수 있습니다.
+    1) <select>
+    2) <insert>
+    3) <update>
+    4) <delete>
+  3. 모든 태그는 id 속성을 작성합니다.
+    1) 동일한 id 속성값을 가질 수 없습니다.
+    2) SQL 구문과 매핑할 메소드의 이름을 id 속성 값으로 지정하는 것을 권장합니다.
+      (1) <select id="selectBoardList">
+      (2) <select id="selectBoardCount">
+      (3) <select id="selectBoardById">
+      (4) <insert id="insertBoard">
+      (5) <update id="updateBoard">
+      (6) <delete id="deleteBoard">
+  4. SQL 구문으로 전달되는 값이 있는 경우 parameterType 속성을 작성합니다. (생략 가능)
+    1) <select parameterType="int">
+    2) <insert parameterType="com.min.app07.dto.BoardDto">
+    3) <update parameterType="com.min.app07.dto.BoardDto">
+    4) <delete parameterType="int">
+  5. SQL 구문의 결과 타입은 resultType 속성에 작성합니다. <select> 태그만 작성합니다. <insert> <update> <delete> 태그는 작성할 수 없습니다.
+    1) List<BoardDto> selectBoardList();
+      <select resultType="com.min.app07.dto.BordDto">     // mybatis는 개수를 신경쓰지 않는다.
+    2) int selectBoardCount();
+      <select resultType="int">
+    3) BoardDto selectBoardById(int boardId);
+      <select resultType="com.min.app07.dto.BoardDto">
+-->
+
+<!--
+  Parameter 처리 방식
+  1. #{parameter}
+    1) SQL 구문으로 전달된 파라미터를 PreparedStatement의 Place Holder(? 마크) 방식으로 처리합니다.
+    2) 작성방법
+      (1) 파라미터가 여러 개인 경우
+        #{param1}, #{param2}, #{param3}, ... 
+      (2) 파라미터가 일반 변수인 경우
+        #{변수}
+      (3) 파라미터가 Map인 경우
+        #{key}
+      (4) 파라미터가 DTO인 경우
+        #{field}
+  2.${parameter}
+    1) 문자열 대체 방식입니다. (String Substitution)
+    2) 전달된 파라미터가 따옴표 또는 이스케이프 처리 없이 그대로 SQL 구문에 포함됩니다.
+    3) SQL 구문의 메타 데이터(테이블 이름, 컬럼 이름, 쿼리문 자체 키워드 등)를 처리할 때 사용합니다.
+ -->
+
+<mapper namespace="mybatis.mappers.boardMapper">
+  
+  <select id="selectBoardList" resultType="com.min.app07.dto.BoardDto">
+    SELECT
+      board_id,
+      title,
+      contents,
+      create_dt,
+      usr_id
+    FROM
+      tbl_board
+    ORDER BY
+      board_id DESC
+  </select>
+  
+  <select id="selectBoardCount" resultType="int">
+    SELECT
+      COUNT(*)
+    FROM
+      tbl_board
+  </select>
+  
+  <select id="selectBoardById" parameterType="int" resultType="com.min.app07.dto.BoardDto">
+    SELECT
+      board_id,
+      title,
+      contents,
+      create_dt,
+      usr_id
+    FROM
+      tbl_board
+    WHERE
+      board_id = #{boardId}    
+  </select>
+  
+  <insert id="insertBoard" parameterType="com.min.app07.dto.BoardDto">
+    INSERT INTI
+      tbl_board
+    VALUES (
+      NULL,
+      #{title},
+      #{contents},
+      NOW(),
+      #{usrId}
+    )
+  </insert>
+  
+  <update id="updateBoard" parameterType="com.min.app07.dto.BoardDto">
+    UPDATE 
+      tbl_board 
+    SET 
+      title = #{title},
+      contents = #{contents},      
+    WHERE 
+      board_id = #{boardId}
+  </update>
+  
+  <delete id="deleteBoard" parameterType="int">
+    DELETE 
+    FROM 
+      tbl_board 
+    WHERE 
+      board_id = #{boardId}
+  </delete>
+</mapper>
