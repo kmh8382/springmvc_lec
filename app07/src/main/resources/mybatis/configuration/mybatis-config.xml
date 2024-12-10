@@ -7,5 +7,10 @@
     <setting name="mapUnderscoreToCamelCase" value="true"/>
   </settings>
   
+  <!-- 매퍼에서 사용할 클래스의 별명 지정하기 -->
+  <typeAliases>
+    <typeAlias type="com.min.app07.dto.BoardDto" alias="BoardDto"/>
+    <typeAlias type="com.min.app07.dto.UserDto" alias="UserDto"/>
+  </typeAliases>
   
 </configuration>
