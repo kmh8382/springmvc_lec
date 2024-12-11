@@ -12,8 +12,9 @@ public interface IBoardDao {
   List<BoardDto> selectBoardSearchList(Map<String, Object> map);
   List<BoardDto> selectBoardPeriodList(Map<String, Object> map);
   List<BoardDto> selectBoardIntegratedSearch(Map<String, Object> map);
+  int selectBoardIntegratedSearchCount(Map<String, Object> map);
   int insertBoard(BoardDto boardDto);
   int updateBoard(BoardDto boardDto);
   int deleteBoard(int boardId);
-  int deleteSelectedBoard(int[] numbers);
+  int deleteSelectedBoard(String[] numbers);
 }

@@ -23,8 +23,8 @@
   <!-- 3. org.mybatis.spring.SqlSessionFactoryBean -->
   <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
     <property name="dataSource" ref="hikariDataSource" />
-    <property name="configLocation"  value="mybatis/configuration/mybatis-config.xml"/>
-    <property name="mapperLocations" value="mybatis/mappers/*.xml"/>
+    <property name="configLocation"  value="classpath:mybatis/configuration/mybatis-config.xml"/>
+    <property name="mapperLocations" value="classpath:mybatis/mappers/*.xml"/>
   </bean>
   
   <!-- 4. org.mybatis.spring.SqlSessionTemplate -->
