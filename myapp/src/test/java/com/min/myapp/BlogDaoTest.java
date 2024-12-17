@@ -73,4 +73,5 @@ class BlogDaoTest {
     int blog_id = blogDao.selectBlogList().get(0).getBlog_id();
     assertEquals(1, blogDao.deleteBlog(blog_id));
   }
+
 }

@@ -1,6 +1,6 @@
 package com.min.myapp.dto;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,13 +16,11 @@ import lombok.ToString;
 @Builder
 @ToString
 public class BlogDto {
-  
-  private int    blog_id;
+  private int blog_id;
   private String title;
   private String contents;
   private String user_email;
-  private int    hit;
-  private Date   modify_dt;
-  private Date   create_dt;
-  
+  private int hit;
+  private Timestamp modify_dt;
+  private Timestamp create_dt;
 }

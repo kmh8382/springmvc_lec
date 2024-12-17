@@ -2,16 +2,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <c:set var="contextPath" value="<%=request.getContextPath()%>"/>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Welcome</title>
-</head>
-<body>
- 
-  <a href='${contextPath}/blog/list.do'>블로그</a>
-   
+
+<jsp:include page="./layout/header.jsp">
+  <jsp:param name="title" value="Welcome"/>
+</jsp:include>
+  
+  <img src="${contextPath}/assets/images/animal2.jpg">
+
+</div>
+  
 </body>
 </html>

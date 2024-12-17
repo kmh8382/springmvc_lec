@@ -12,15 +12,18 @@ import com.min.myapp.dto.BlogDto;
 @Service
 public class BlogServiceImpl implements IBlogService {
 
-  @Autowired
   private IBlogDao blogDao;
+  
+  @Autowired  // Setter 형식의 메소드를 이용한 DI 방식입니다. 매개변수로 bean이 주입되면 필드로 전달됩니다.
+  public void prepare(IBlogDao blogDao) {
+    this.blogDao = blogDao;
+  }
   
   @Override
   public Map<String, Object> getBlogList() {
-    List<BlogDto> bloglist = blogDao.selectBlogList();
+    List<BlogDto> blogList = blogDao.selectBlogList();
     int count = blogDao.selectBlogCount();
-    
-    return Map.of("bloglist", bloglist, "count", count);
+    return Map.of("blogList", blogList, "count", count);
   }
 
   @Override
@@ -35,20 +38,17 @@ public class BlogServiceImpl implements IBlogService {
 
   @Override
   public String registerBlog(BlogDto blogDto) {
-    // TODO Auto-generated method stub
-    return null;
+    return blogDao.insertBlog(blogDto) == 1 ? "블로그 삽입 성공" : "블로그 삽입 실패";
   }
 
   @Override
   public String modifyBlog(BlogDto blogDto) {
-    // TODO Auto-generated method stub
-    return null;
+    return blogDao.updateBlog(blogDto) == 1 ? "블로그 수정 성공" : "블로그 수정 실패";
   }
 
   @Override
   public String removeBlog(int blog_id) {
-    // TODO Auto-generated method stub
-    return null;
+    return blogDao.deleteBlog(blog_id) == 1 ? "블로그 삭제 성공" : "블로그 삭제 실패";
   }
 
 }
