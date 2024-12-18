@@ -5,6 +5,16 @@ USE db_myapp;
 DROP TABLE IF EXISTS tbl_attach;
 DROP TABLE IF EXISTS tbl_notice;
 DROP TABLE IF EXISTS tbl_blog;
+DROP TABLE IF EXISTS tbl_user;
+
+CREATE TABLE IF NOT EXISTS tbl_user
+(
+    user_id    INT AUTO_INCREMENT,
+    user_email VARCHAR(100) NOT NULL UNIQUE,
+    user_pw    VARCHAR(64) NOT NULL COMMENT 'SHA-256 암호화 비밀번호',
+    user_name  VARCHAR(100),
+    CONSTRAINT pk_user PRIMARY KEY (user_id)
+) ENGINE='InnoDB' COMMENT='사용자';
 
 CREATE TABLE IF NOT EXISTS tbl_blog
 (
@@ -15,16 +25,21 @@ CREATE TABLE IF NOT EXISTS tbl_blog
     hit        INT COMMENT '조회수',
     modify_dt  DATETIME COMMENT '수정일시',
     create_dt  DATETIME COMMENT '작성일시',
-    CONSTRAINT pk_blog PRIMARY KEY (blog_id)
+    CONSTRAINT pk_blog PRIMARY KEY (blog_id),
+    CONSTRAINT fk_user_blog FOREIGN KEY (user_email)
+        REFERENCES tbl_user (user_email) ON DELETE CASCADE  -- 블로그 작성자가 없어지면 해당 블로그를 삭제한다.
 ) ENGINE=InnoDB COMMENT '블로그';
 
 CREATE TABLE IF NOT EXISTS tbl_notice
 (
     notice_id       INT AUTO_INCREMENT,
+    user_id         INT,
     notice_title    VARCHAR(1000) NOT NULL,
     notice_contents VARCHAR(1000),
     created_at      DATETIME,
-    CONSTRAINT pk_notice PRIMARY KEY (notice_id)
+    CONSTRAINT pk_notice PRIMARY KEY (notice_id),
+    CONSTRAINT fk_user_notice FOREIGN KEY (user_id)
+        REFERENCES tbl_user (user_id) ON DELETE SET NULL  -- 공지사항 작성자가 없어지면 해당 작성자 정보를 null 처리한다.
 ) ENGINE=InnoDB COMMENT='공지사항';
 
 CREATE TABLE IF NOT EXISTS tbl_attach
@@ -40,6 +55,5 @@ CREATE TABLE IF NOT EXISTS tbl_attach
         REFERENCES tbl_notice (notice_id) ON DELETE CASCADE
 ) ENGINE=InnoDB COMMENT='첨부파일';
 
-INSERT INTO tbl_blog VALUES (NULL, '라면 끓이기', '저는 물 많이 넣은 한강 라면을 좋아합니다.', 'james@gmail.com', 5, NULL, '2024-12-05 10:00:30');
-INSERT INTO tbl_blog VALUES (NULL, '표고버섯구이', '저는 표고버섯을 프라이팬에 구어 먹는 걸 좋아합니다.', 'alice@gmail.com', 100, NULL, '2024-12-06 12:10:30');
+INSERT INTO tbl_user VALUES (NULL, 'admin@naver.com', SHA2('admin', 256), '관리자');
 COMMIT;

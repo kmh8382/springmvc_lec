@@ -7,15 +7,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="${contextPath}/assets/css/init.css?dt=<%=System.currentTimeMillis()%>">
-<link rel="stylesheet" href="${contextPath}/assets/css/header.css?dt=<%=System.currentTimeMillis()%>">
-<script src="${contextPath}/assets/js/main.js?dt=<%=System.currentTimeMillis()%>"></script>
-<title>${param.title}</title>
+<title>Welcome</title>
 </head>
 <body>
 
-  <h1 id="logo" class="logo">Coupang</h1>
-
+  <h1>Welcome Page</h1>
+  
   <c:if test="${empty sessionScope.loginUser}">  
     <button type="button" id="btn-login-form">로그인</button>
     <button type="button" id="btn-signup-form">회원가입</button>
@@ -68,16 +65,6 @@
     boardForm();
     displayMsg();
   </script>
-  
 
-  <nav class="gnb-wrap">
-    <ul class="gnb">
-      <li><a href="${contextPath}/blog/list.do">블로그</a></li>
-      <li><a href="${contextPath}/notice/list.do">공지사항</a></li>
-      <li><a href="${contextPath}/notice/list.do">공지사항</a></li>
-      <li><a href="${contextPath}/notice/list.do">공지사항</a></li>
-      <li><a href="${contextPath}/notice/list.do">공지사항</a></li>
-    </ul>
-  </nav>
-  
-  <div class="wrap">
+</body>
+</html>

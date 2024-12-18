@@ -54,4 +54,18 @@
      WHERE attach_id = #{attach_id}
   </update>
   
+  <insert id="insertUser" parameterType="UserDto">
+    INSERT INTO tbl_user
+    VALUES (null, #{userEmail}, #{userPw}, #{userName})
+  </insert>
+  
+  <select id="selectUserByMap" parameterType="Map" resultType="UserDto">
+    SELECT user_id, user_email, user_pw, user_name
+      FROM tbl_user
+    <where>
+      <if test="userEmail != null">user_email = #{userEmail}</if>
+      <if test="userPw != null">AND user_pw = #{userPw}</if>
+    </where>
+  </select>
+  
 </mapper>
