@@ -24,4 +24,20 @@ public class UserDaoImpl implements IUserDao {
   public UserDto selectUserByMap(Map<String, Object> map) {
     return template.selectOne("mybatis.mappers.noticeMapper.selectUserByMap", map);
   }
+
+  @Override
+  public int updateUserInfo(UserDto userDto) {
+    return template.update("mybatis.mappers.noticeMapper.updateUserInfo", userDto);
+  }
+  
+  @Override
+  public int updateUserProfile(UserDto userDto) {
+    return template.update("mybatis.mappers.noticeMapper.updateUserProfile", userDto);
+  }
+  
+  @Override
+  public int deleteUser(int user_id) {
+    return template.delete("mybatis.mappers.noticeMapper.deleteUser", user_id);  
+  }
+  
 }

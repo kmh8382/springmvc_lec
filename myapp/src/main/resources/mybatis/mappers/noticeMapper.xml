@@ -31,7 +31,7 @@
   
   <insert id="insertNotice" parameterType="NoticeDto">
     INSERT INTO tbl_notice
-    VALUES (null, #{noticeTitle}, #{noticeContents}, NOW())
+    VALUES (null, #{userId}, #{noticeTitle}, #{noticeContents}, NOW())
     <selectKey keyProperty="noticeId" resultType="int" order="AFTER">
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -56,16 +56,38 @@
   
   <insert id="insertUser" parameterType="UserDto">
     INSERT INTO tbl_user
-    VALUES (null, #{userEmail}, #{userPw}, #{userName})
+    VALUES (null, #{userEmail}, #{userPw}, #{userName}, null)
   </insert>
   
   <select id="selectUserByMap" parameterType="Map" resultType="UserDto">
-    SELECT user_id, user_email, user_pw, user_name
+    SELECT user_id, user_email, user_pw, user_name, profile_img
       FROM tbl_user
     <where>
       <if test="userEmail != null">user_email = #{userEmail}</if>
       <if test="userPw != null">AND user_pw = #{userPw}</if>
+      <if test="userId != null">AND user_id = #{userId}</if>      
     </where>
   </select>
+
+  <update id="updateUserInfo" parameterType="UserDto">
+    UPDATE tbl_user
+      <set>
+        <if test="userEmail != ''">user_email = #{userEmail}</if>
+        <if test="userName != ''">, user_name = #{userName}</if>
+      </set>
+     WHERE user_id = #{userId}
+  </update>  
+  
+  <update id="updateUserProfile" parameterType="UserDto">
+    UPDATE tbl_user
+       SET profile_img = #{profileImg}
+     WHERE user_id = #{userId}
+  </update>  
+  
+  <delete id="deleteUser" parameterType="int">
+    DELETE
+      FROM tbl_user 
+     WHERE user_id = #{user_id}
+  </delete>
   
 </mapper>

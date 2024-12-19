@@ -2,14 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <c:set var="contextPath" value="<%=request.getContextPath()%>"/>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login</title>
-</head>
-<body>
+
+<jsp:include page="../layout/header.jsp">
+  <jsp:param name="title" value="마이 페이지"/>
+</jsp:include>
 
   <h1>로그인 화면</h1>
   

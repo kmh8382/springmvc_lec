@@ -10,7 +10,8 @@
   <h1>Notice Write</h1>
   
   <div>
-    <form action="${contextPath}/notice/regist.do" method="post" enctype="multipart/form-data">
+    <form action="${contextPath}/notice/regist.do" method="post" enctype="multipart/form-data">    
+      <input type="text" name="userId" value="${sessionScope.loginUser.userId}" readonly><br/>
       <input type="text" name="noticeTitle" placeholder="제목"><br/>
       <textarea rows="5" cols="30" name="noticeContents" placeholder="내용"></textarea><br/>
       <input type="file" name="files" id="files" multiple><br/>

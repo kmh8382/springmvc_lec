@@ -37,10 +37,12 @@ public class NoticeServiceImpl implements INoticeService {
   public String registNotice(MultipartHttpServletRequest multipartRequest) {
     
     // 공지사항 제목과 내용
+    int userId = Integer.parseInt(multipartRequest.getParameter("userId"));
     String noticeTitle = multipartRequest.getParameter("noticeTitle");
     String noticeContents = multipartRequest.getParameter("noticeContents");
     
     NoticeDto noticeDto = NoticeDto.builder()
+                              .userId(userId)
                               .noticeTitle(noticeTitle)
                               .noticeContents(noticeContents)
                               .build();

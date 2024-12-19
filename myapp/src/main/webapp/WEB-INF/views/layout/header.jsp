@@ -22,7 +22,9 @@
     <script>
       function loginForm() {
         document.getElementById('btn-login-form').addEventListener('click', (event) => {
-          location.href = '${contextPath}/user/login.form?url=' + location.href;
+          if(!location.href.includes('login.form')) {
+            location.href = '${contextPath}/user/login.form?url=' + location.href;
+          }
         })
       }
       function signupForm() {
@@ -37,7 +39,7 @@
 
   <c:if test="${not empty sessionScope.loginUser}">
     <div>
-      <span><a href="#">${sessionScope.loginUser.userName}</a>님 환영합니다.</span>
+      <span><a href="${contextPath}/user/mypage.do?userId=${sessionScope.loginUser.userId}">${sessionScope.loginUser.userName}</a>님 환영합니다.</span>
       <button type="button" id="btn-logout">로그아웃</button>
     </div>
     <script>
@@ -50,16 +52,8 @@
     </script>
   </c:if>
   
-  <div>
-    <button type="button" id="btn-board-form">게시글 작성</button>
-  </div>
 
   <script>
-    function boardForm() {
-      document.getElementById('btn-board-form').addEventListener('click', (event) => {
-        location.href = '${contextPath}/board/write.do';
-      })
-    }
     function displayMsg() {
       const msg = '${msg}';
       if(msg !== '')

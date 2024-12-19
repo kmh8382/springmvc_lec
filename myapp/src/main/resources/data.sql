@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS tbl_user
     user_email VARCHAR(100) NOT NULL UNIQUE,
     user_pw    VARCHAR(64) NOT NULL COMMENT 'SHA-256 암호화 비밀번호',
     user_name  VARCHAR(100),
+    profile_img  VARCHAR(100),
     CONSTRAINT pk_user PRIMARY KEY (user_id)
 ) ENGINE='InnoDB' COMMENT='사용자';
 
@@ -55,5 +56,8 @@ CREATE TABLE IF NOT EXISTS tbl_attach
         REFERENCES tbl_notice (notice_id) ON DELETE CASCADE
 ) ENGINE=InnoDB COMMENT='첨부파일';
 
-INSERT INTO tbl_user VALUES (NULL, 'admin@naver.com', SHA2('admin', 256), '관리자');
+INSERT INTO tbl_user VALUES (NULL, 'admin@naver.com', SHA2('admin', 256), '관리자', NULL);
 COMMIT;
+
+
+SELECT * FROM tbl_user;

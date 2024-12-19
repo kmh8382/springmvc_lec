@@ -1,14 +1,18 @@
 package com.min.myapp.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.min.myapp.dao.IUserDao;
 import com.min.myapp.dto.UserDto;
+import com.min.myapp.util.FileUtil;
 import com.min.myapp.util.SecureUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +23,7 @@ public class UserServiceImpl implements IUserService {
 
   private final IUserDao userDao;
   private final SecureUtil secureUtil;
+  private final FileUtil fileUtil;
   
   @Override
   public String signup(UserDto userDto) {
@@ -67,4 +72,46 @@ public class UserServiceImpl implements IUserService {
     session.invalidate();   // 세션 초기화 작업    
   }
   
+  @Override
+  public UserDto mypage(int userId) {
+    return userDao.selectUserByMap(Map.of("userId", userId));
+  }
+  
+  @Override
+  public String modifyInfo(UserDto userDto) {
+    return userDao.updateUserInfo(userDto) == 1 ? "회원 정보 변경 완료" : "회원 정보 변경 실패";
+  }
+  
+  @Override
+  public String modifyProfile(MultipartFile profile, int userId) {
+    String profilePath = fileUtil.getFilePath();
+    File dir = new File(profilePath);
+    if(!dir.exists())
+      dir.mkdir();
+    
+    String profileName = fileUtil.getFilesystemName(profile.getOriginalFilename());
+    
+    try {
+      profile.transferTo(new File(dir, profileName));
+    } catch (IOException e) {
+      return "프로필 변경 실패";
+    }
+   
+    UserDto userDto = UserDto.builder()
+                             .profileImg(profilePath + "/" + profileName)
+                             .userId(userId)
+                             .build();
+System.out.println(profilePath + "/" + profileName);      
+    return userDao.updateUserProfile(userDto) == 1 ? "프로필 변경 완료" : "프로필 변경 실패";
+  }
+  
+  @Override
+  public String removeUser(int user_id, String profileImg, HttpSession session) {
+    session.invalidate();
+    File profile = new File(profileImg);
+    if(profile.exists())
+      profile.delete();
+    return userDao.deleteUser(user_id) == 1 ? "회원탈퇴 성공" : "회원탈퇴 실패";
+  }
+
 }

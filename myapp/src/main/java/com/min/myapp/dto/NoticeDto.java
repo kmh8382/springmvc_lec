@@ -17,6 +17,7 @@ import lombok.ToString;
 @ToString
 public class NoticeDto {
   private int noticeId;
+  private int userId;
   private String noticeTitle;
   private String noticeContents;
   private Timestamp createdAt;

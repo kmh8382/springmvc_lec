@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.min.myapp.dto.UserDto;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
   private final IUserService userService;
+ 
   
   @RequestMapping(value="/user/signup.form")
   public String signupForm() {
@@ -53,6 +55,41 @@ public class UserController {
   @RequestMapping(value="/user/logout.do")
   public String logout(HttpSession session) {
     userService.logout(session);
+    return "redirect:/";
+  }
+    
+  @RequestMapping(value="/user/mypage.do")
+  public String mypage(@RequestParam(value="userId") int userId
+                     , Model model) {
+    model.addAttribute("u", userService.mypage(userId));
+    return "user/mypage";
+  }    
+  
+  @RequestMapping(value="/user/modifyInfo.do", method=RequestMethod.POST)
+  public String modifyInfo(UserDto userDto, RedirectAttributes redirectAttributes) {    
+    redirectAttributes.addFlashAttribute("msg", userService.modifyInfo(userDto));
+    return "redirect:/user/mypage.do?userId=" + userDto.getUserId();
+  }
+  
+  @RequestMapping(value="/user/modifyProfile.do", method=RequestMethod.POST)
+  public String modifyProfile(@RequestParam(value="userId") int userId
+                            , @RequestParam(name="profile") MultipartFile profile
+                            , RedirectAttributes redirectAttributes) {    
+    if(profile.isEmpty()) {
+      redirectAttributes.addFlashAttribute("msg", "프로필을 선택해주세요.");
+      return "redirect:/";
+    }
+    redirectAttributes.addFlashAttribute("msg", userService.modifyProfile(profile, userId));
+    
+    return "redirect:/user/mypage.do?userId=" + userId;
+  }    
+  
+  @RequestMapping(value="/user/remove.do", method=RequestMethod.POST)
+  public String remove(@RequestParam(value="userId") int userId
+                     , @RequestParam(name="profileImg") String profileImg
+                     , RedirectAttributes redirectAttributes
+                     , HttpSession session) {    
+    redirectAttributes.addFlashAttribute("msg", userService.removeUser(userId, profileImg, session));
     return "redirect:/";
   }
   
