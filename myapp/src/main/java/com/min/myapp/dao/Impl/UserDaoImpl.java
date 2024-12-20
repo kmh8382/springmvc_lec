@@ -1,10 +1,11 @@
-package com.min.myapp.dao;
+package com.min.myapp.dao.Impl;
 
 import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.min.myapp.dao.IUserDao;
 import com.min.myapp.dto.UserDto;
 
 import lombok.RequiredArgsConstructor;

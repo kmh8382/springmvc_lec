@@ -14,11 +14,16 @@
   </div>
 
   <div>
-    <c:forEach items="${noticeList}" var="n">
+    <a href="${contextPath}/notice/search.form">검색</a>
+  </div>
+  
+  <div> 
+    <c:forEach items="${notices}" var="n">
       <div class="notices" data-notice-id="${n.noticeId}">
         공지번호 ${n.noticeId} | ${n.noticeTitle}(${n.attachCount}) ... <fmt:formatDate value="${n.createdAt}" pattern="yyyy.MM.dd HH:mm:ss"/>
       </div>
     </c:forEach>
+    <div>${paging}</div>
   </div>
 
   <script>

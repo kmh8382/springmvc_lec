@@ -1,9 +1,13 @@
-package com.min.myapp.service;
+package com.min.myapp.service.Impl;
 
 import java.io.File;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -14,9 +18,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.min.myapp.util.PageUtil;
 import com.min.myapp.dao.INoticeDao;
 import com.min.myapp.dto.AttachDto;
 import com.min.myapp.dto.NoticeDto;
+import com.min.myapp.dto.UserDto;
+import com.min.myapp.service.INoticeService;
 import com.min.myapp.util.FileUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -27,11 +34,50 @@ public class NoticeServiceImpl implements INoticeService {
 
   private final INoticeDao noticeDao;
   private final FileUtil fileUtil;
+  private final PageUtil pageUtil;
   
+/*  
   @Override
   public List<NoticeDto> getNoticeList() {
     return noticeDao.selectNoticeList();
   }
+*/
+  @Override
+  public Map<String, Object> getNoticeList(HttpServletRequest request) {
+    
+    // page 파라미터 (디폴트 1)
+    Optional<String> optPage = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(optPage.orElse("1"));
+    
+    // display 파라미터 (디폴트 20)
+    Optional<String> optDisplay = Optional.ofNullable(request.getParameter("display"));
+    int display = Integer.parseInt(optDisplay.orElse("5"));
+    
+    // DB에서 전체 목록의 개수 가져오기
+    int total = noticeDao.selectNoticeCount();
+    
+    // 페이징 처리에 필요한 모든 정보 처리하기
+    pageUtil.setPaging(page, display, total);
+    
+    // sort 파라미터 (디폴트 DESC)
+    Optional<String> optSort = Optional.ofNullable(request.getParameter("sort"));
+    String sort = optSort.orElse("DESC");
+
+    // 목록 가져오기
+    List<NoticeDto> notices = noticeDao.selectNoticeList(Map.of("offset", pageUtil.getOffset()
+                                                                 , "display", pageUtil.getDisplay()
+                                                                 , "sort", sort));
+    
+    // 페이지 이동 링크 가져오기
+    String paging = pageUtil.getPaging(request.getContextPath() + "/notice/list.do", sort);
+
+    // 결과 반환하기
+    return Map.of("notices", notices
+                , "total", total
+                , "paging", paging
+                , "offset", pageUtil.getOffset());  // offset 으로 순번 생성
+
+  }  
   
   @Override
   public String registNotice(MultipartHttpServletRequest multipartRequest) {
@@ -42,7 +88,9 @@ public class NoticeServiceImpl implements INoticeService {
     String noticeContents = multipartRequest.getParameter("noticeContents");
     
     NoticeDto noticeDto = NoticeDto.builder()
-                              .userId(userId)
+                              .userDto(UserDto.builder()
+                                              .userId(userId)
+                                              .build())
                               .noticeTitle(noticeTitle)
                               .noticeContents(noticeContents)
                               .build();
@@ -166,4 +214,49 @@ public class NoticeServiceImpl implements INoticeService {
     
   }
 
+  @Override
+  public Map<String, Object> getSearchList(HttpServletRequest request) {
+    // 검색에 필요한 파라미터
+    String noticeTitle = request.getParameter("noticeTitle");
+    String noticeContents = request.getParameter("noticeContents");
+    String beginDt = request.getParameter("beginDt");
+    String endDt = request.getParameter("endDt");
+
+    // 페이징 처리에 필요한 파라미터
+    Optional<String> optPage = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(optPage.orElse("1"));
+
+    Optional<String> optDisplay = Optional.ofNullable(request.getParameter("display"));
+    int display = Integer.parseInt(optDisplay.orElse("5"));
+
+    // 검색 키워드들을 Map으로 만듬
+    Map<String, Object> map = new HashMap<String, Object>();  // Map.of()는 나중에 값을 추가할 수 없으므로 new HashMap()을 활용합니다.
+    map.put("noticeTitle", noticeTitle);
+    map.put("noticeContents", noticeContents);
+    map.put("beginDt", beginDt);
+    map.put("endDt", endDt);
+
+    // 검색 결과 개수
+    int searchCount = noticeDao.selectSearchCount(map);
+    
+    // 페이징 처리에 필요한 모든 변수 처리하기
+    pageUtil.setPaging(page, display, searchCount);
+    int offset = pageUtil.getOffset();
+    
+    // 검색키워드 Map에 페이징 처리에 필요한 변수를 추가
+    map.put("offset", offset);
+    map.put("display", display);
+    
+    // 검색 목록 가져오기
+    List<NoticeDto> searchList = noticeDao.selectSearchList(map);
+    
+    // 페이지 이동 링크 가져오기
+    String paging = pageUtil.getSearchPaging(request.getContextPath() + "/notice/search.do", "noticeTitle=" + noticeTitle + "&noticeContents=" + noticeContents + "&beginDt=" + beginDt + "&endDt=" + endDt);
+    
+    // 결과 반환
+    return Map.of("searchList", searchList
+                , "searchCount", searchCount
+                , "paging", paging
+                , "offset", offset);  // offset 으로 순번 생성;
+  }
 }

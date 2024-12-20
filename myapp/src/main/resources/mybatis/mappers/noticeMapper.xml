@@ -3,13 +3,43 @@
 
 <mapper namespace="mybatis.mappers.noticeMapper">
   
-  <select id="selectNoticeList" resultType="NoticeDto">
+  <resultMap type="NoticeDto" id="noticeMap">
+    <id column="notice_id" property="noticeId"/>
+    <result column="notice_title" property="noticeTitle"/>
+    <result column="notice_contents" property="noticeContents"/>
+    <result column="created_at" property="createdAt"/>
+    <result column="attach_count" property="attachCount"/>
+    <association javaType="UserDto" property="userDto">
+      <id column="user_id" property="userId"/>
+      <result column="user_email" property="userEmail"/>
+      <result column="user_pw" property="userPw"/>
+      <result column="user_name" property="userName"/>
+      <result column="profile_img" property="profileImg"/>
+    </association>
+  </resultMap>
+  
+<!--  
+  <select id="selectNoticeList" resultType="NoticeDto">    
     SELECT n.notice_id, notice_title, notice_contents, created_at, COUNT(attach_id) AS attach_count
       FROM tbl_notice n LEFT JOIN tbl_attach a
         ON n.notice_id = a.notice_id
      GROUP BY n.notice_id, notice_title, notice_contents, created_at
      ORDER BY n.notice_id DESC
   </select>
+-->
+  <select id="selectNoticeList" parameterType="Map" resultType="NoticeDto">    
+    SELECT n.notice_id, notice_title, notice_contents, created_at, COUNT(attach_id) AS attach_count
+      FROM tbl_notice n LEFT JOIN tbl_attach a
+        ON n.notice_id = a.notice_id
+     GROUP BY n.notice_id, notice_title, notice_contents, created_at
+     ORDER BY n.notice_id ${sort}   
+     LIMIT #{offset}, #{display}
+  </select>
+
+  <select id="selectNoticeCount" resultType="int">
+    SELECT COUNT(*)
+      FROM tbl_notice
+  </select>    
   
   <select id="selectNoticeById" parameterType="int" resultType="NoticeDto">
     SELECT notice_id, notice_title, notice_contents, created_at
@@ -31,7 +61,7 @@
   
   <insert id="insertNotice" parameterType="NoticeDto">
     INSERT INTO tbl_notice
-    VALUES (null, #{userId}, #{noticeTitle}, #{noticeContents}, NOW())
+    VALUES (null, #{userDto.userId}, #{noticeTitle}, #{noticeContents}, NOW())
     <selectKey keyProperty="noticeId" resultType="int" order="AFTER">
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -89,5 +119,30 @@
       FROM tbl_user 
      WHERE user_id = #{user_id}
   </delete>
+  
+  <select id="selectSearchCount" parameterType="Map" resultType="int">
+    SELECT COUNT(*)
+      FROM tbl_notice
+    <where>
+      <if test="noticeTitle != ''">notice_title LIKE CONCAT('%', #{noticeTitle}, '%')</if>
+      <if test="noticeContents != ''">AND notice_contents LIKE CONCAT('%', #{noticeContents}, '%')</if>
+      <if test="beginDt != ''">AND created_at >= #{beginDt}</if>
+      <if test="endDt != ''">AND created_at <![CDATA[<=]]> #{endDt}</if>
+    </where>  
+  </select>
+  
+  <select id="selectSearchList" parameterType="Map" resultMap="noticeMap">
+    SELECT n.notice_id, notice_title, notice_contents, created_at, COUNT(attach_id) AS attach_count
+      FROM tbl_notice n LEFT JOIN tbl_attach a
+        ON n.notice_id = a.notice_id
+    <where>
+      <if test="noticeTitle != ''">notice_title LIKE CONCAT('%', #{noticeTitle}, '%')</if>
+      <if test="noticeContents != ''">AND notice_contents LIKE CONCAT('%', #{noticeContents}, '%')</if>
+      <if test="beginDt != ''">AND created_at >= #{beginDt}</if>
+      <if test="endDt != ''">AND created_at <![CDATA[<=]]> #{endDt}</if>
+    </where>
+     GROUP BY n.notice_id, notice_title, notice_contents, created_at
+     LIMIT #{offset}, #{display}
+  </select>
   
 </mapper>

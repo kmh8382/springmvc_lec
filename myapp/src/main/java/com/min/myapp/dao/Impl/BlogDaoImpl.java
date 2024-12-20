@@ -1,4 +1,4 @@
-package com.min.myapp.dao;
+package com.min.myapp.dao.Impl;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,9 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
+import com.min.myapp.dao.IBlogDao;
 import com.min.myapp.dto.BlogDto;
 
 @Repository
@@ -33,12 +35,14 @@ public class BlogDaoImpl implements IBlogDao {
   }
 
   @Override
-  public List<BlogDto> selectBlogList() {
+  public List<BlogDto> selectBlogList(Map<String, Object> map) {
     List<BlogDto> blogList = new ArrayList<BlogDto>();
     try {
       connect();
-      String sql = "SELECT blog_id, title, contents, user_email, hit, modify_dt, create_dt FROM tbl_blog ORDER BY blog_id DESC";
+      String sql = "SELECT blog_id, title, contents, user_email, hit, modify_dt, create_dt FROM tbl_blog ORDER BY blog_id " + map.get("sort") + " LIMIT ?, ?";
       ps = conn.prepareStatement(sql);
+      ps.setInt(1, (int)map.get("offset"));
+      ps.setInt(2, (int)map.get("display"));
       rs = ps.executeQuery();
       while(rs.next()) {
         BlogDto blogDto = BlogDto.builder()

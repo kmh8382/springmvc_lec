@@ -1,4 +1,4 @@
-package com.min.myapp.service;
+package com.min.myapp.service.Impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.min.myapp.dao.IUserDao;
 import com.min.myapp.dto.UserDto;
+import com.min.myapp.service.IUserService;
 import com.min.myapp.util.FileUtil;
 import com.min.myapp.util.SecureUtil;
 
