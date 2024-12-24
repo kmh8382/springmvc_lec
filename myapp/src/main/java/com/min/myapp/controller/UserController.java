@@ -60,7 +60,27 @@ public class UserController {
     
   @RequestMapping(value="/user/mypage.do")
   public String mypage(@RequestParam(value="userId") int userId
-                     , Model model) {
+                     , Model model/*, HttpServletRequest request*/) {
+    
+/*    
+String agent = request.getHeader("User-Agent");
+System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" + agent);
+
+String ip = request.getHeader("X-FORWARDED-FOR");     
+//proxy 환경일 경우
+if (ip == null || ip.length() == 0) {
+    ip = request.getHeader("Proxy-Client-IP");
+}
+//웹로직 서버일 경우
+if (ip == null || ip.length() == 0) {
+    ip = request.getHeader("WL-Proxy-Client-IP");
+}
+if (ip == null || ip.length() == 0) {
+    ip = request.getRemoteAddr() ;
+}
+System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" + ip);
+*/
+    
     model.addAttribute("u", userService.mypage(userId));
     return "user/mypage";
   }    

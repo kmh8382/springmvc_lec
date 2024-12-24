@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="mybatis.mappers.bbsMapper">
+  
+  <insert id="insertBbs" parameterType="BbsDto">
+    INSERT INTO tbl_bbs
+    VALUES (null, #{contents}, NOW(), 0, 0, LAST_INSERT_ID()+1, 0);
+  </insert>
+  
+  <select id="selectBbsList" parameterType="Map" resultType="BbsDto">
+    SELECT bbs_id, contents, created_at, state, depth, group_id, group_order
+      FROM tbl_bbs
+     ORDER BY group_id DESC, group_order ASC
+     LIMIT #{offset}, #{display}
+  </select>
+  
+  <select id="selectBbsCount" resultType="int">
+    SELECT COUNT(*) 
+      FROM tbl_bbs;
+  </select>
+  
+  
+</mapper>
